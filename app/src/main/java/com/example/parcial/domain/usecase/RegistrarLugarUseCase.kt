@@ -1,6 +1,6 @@
 package com.example.preparcial.domain.usecase
 
-import com.example.preparcial.domain.model.Categoria
+import com.example.preparcial.domain.model.Lugar
 import com.example.preparcial.domain.repository.ViajeRepository
 import java.time.LocalDate
 
@@ -8,24 +8,53 @@ class RegistrarLugarUseCase(
     private val repository: ViajeRepository
 ) {
     suspend operator fun invoke(
+        tripId: String,
         nombre: String,
         descripcion: String,
         ciudad: String,
-        categoria: List<Categoria>?,
-        fecha_tentativa: LocalDate
-    ): Result<Unit> {
+        categoriaId: Int?,
+        fechaTentativa: LocalDate?
+    ): Result<Lugar> {
+        if (tripId.isBlank()) {
+            return Result.failure(IllegalArgumentException("No se identificó el viaje"))
+        }
         if (nombre.isBlank()) {
             return Result.failure(IllegalArgumentException("El nombre del lugar es requerido"))
         }
+        if (descripcion.isBlank()) {
+            return Result.failure(IllegalArgumentException("La descripción es requerida"))
+        }
         if (ciudad.isBlank()) {
-            return Result.failure(IllegalArgumentException("El nombre de la ciudad es requerido"))
+            return Result.failure(IllegalArgumentException("La ciudad es requerida"))
         }
-        if (categoria==null) {
-            return Result.failure(IllegalArgumentException("Debe seleccionar por lo menos una categoria"))
+        if (categoriaId == null) {
+            return Result.failure(IllegalArgumentException("Debe seleccionar una categoría"))
         }
-        if (fecha_tentativa==null) {
+        if (fechaTentativa == null) {
             return Result.failure(IllegalArgumentException("Debe ingresar la fecha tentativa"))
         }
-        return repository.registrarLugar(nombre, descripcion, ciudad, categoria, fecha_tentativa)
+
+        val resultadoViaje = repository.getViaje(tripId)
+        if (resultadoViaje.isFailure) {
+            return Result.failure(
+                resultadoViaje.exceptionOrNull() ?: IllegalStateException("No se pudo consultar el viaje")
+            )
+        }
+        val viaje = resultadoViaje.getOrThrow()
+
+        if (fechaTentativa.isBefore(viaje.fecha_inicio) || fechaTentativa.isAfter(viaje.fecha_fin)) {
+            return Result.failure(
+                IllegalArgumentException("La fecha tentativa debe estar dentro del período del viaje")
+            )
+        }
+
+        return repository.crearLugar(
+            tripId = tripId,
+            nombre = nombre.trim(),
+            descripcion = descripcion.trim(),
+            ciudad = ciudad.trim(),
+            categoriaId = categoriaId,
+            fechaTentativa = fechaTentativa
+        )
     }
 }
