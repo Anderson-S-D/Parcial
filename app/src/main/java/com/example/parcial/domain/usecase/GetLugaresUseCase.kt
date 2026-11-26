@@ -1,7 +1,7 @@
-package com.example.preparcial.domain.usecase
+package com.example.parcial.domain.usecase
 
-import com.example.preparcial.domain.model.Lugar
-import com.example.preparcial.domain.repository.ViajeRepository
+import com.example.parcial.domain.model.Lugar
+import com.example.parcial.domain.repository.ViajeRepository
 
 class GetLugaresUseCase(
     private val repository: ViajeRepository
@@ -11,7 +11,6 @@ class GetLugaresUseCase(
             return Result.failure(IllegalArgumentException("El id del viaje es requerido"))
         }
         return repository.getLugares(tripId).map { lugares ->
-            // Doble filtro: aunque la API traiga más datos, solo mostramos los de este viaje.
             lugares.filter { it.tripId == tripId }
         }
     }

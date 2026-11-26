@@ -1,7 +1,7 @@
-package com.example.preparcial.domain.usecase
+package com.example.parcial.domain.usecase
 
-import com.example.preparcial.domain.model.Viaje
-import com.example.preparcial.domain.repository.ViajeRepository
+import com.example.parcial.domain.model.Viaje
+import com.example.parcial.domain.repository.ViajeRepository
 
 class GetViajesUseCase(
     private val repository: ViajeRepository

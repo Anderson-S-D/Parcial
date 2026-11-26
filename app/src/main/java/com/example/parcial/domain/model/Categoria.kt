@@ -1,7 +1,6 @@
-package com.example.preparcial.domain.model
-
+package com.example.parcial.domain.model
 
 data class Categoria(
-    val id: String,
+    val id: Int,
     val nombre: String
 )

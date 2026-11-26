@@ -1,8 +1,8 @@
 package com.example.parcial.data.remote
 
-import com.example.preparcial.domain.model.Categoria
-import com.example.preparcial.domain.model.Lugar
-import com.example.preparcial.domain.model.Viaje
+import com.example.parcial.domain.model.Categoria
+import com.example.parcial.domain.model.Lugar
+import com.example.parcial.domain.model.Viaje
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 
@@ -13,7 +13,7 @@ data class CategoriaDto(
 ) {
     fun toDomain(): Categoria {
         return Categoria(
-            id = id?.toString() ?: "",
+            id = id ?: 0,
             nombre = nombre ?: ""
         )
     }
@@ -35,8 +35,8 @@ data class LugarDto(
             nombre = nombre ?: "",
             descripcion = descripcion ?: "",
             ciudad = ciudad ?: "",
-            categoria = listOfNotNull(categoria?.toDomain()),
-            fecha_tentativa = fechaTentativa?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
+            categoria = categoria?.toDomain(),
+            fechaTentativa = fechaTentativa?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
                 ?: LocalDate.MIN,
             tripId = viajeId.orEmpty(),
             categoriaId = categoriaId
@@ -57,9 +57,9 @@ data class ViajeDto(
             id = id ?: "",
             nombre = nombre ?: "",
             destino = destino ?: "",
-            fecha_inicio = fechaInicio?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
+            fechaInicio = fechaInicio?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
                 ?: LocalDate.MIN,
-            fecha_fin = fechaFin?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
+            fechaFin = fechaFin?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
                 ?: LocalDate.MIN
         )
     }

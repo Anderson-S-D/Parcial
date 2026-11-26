@@ -2,9 +2,9 @@ package com.example.parcial.presentacion.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.preparcial.domain.model.Categoria
-import com.example.preparcial.domain.usecase.GetCategoriasUseCase
-import com.example.preparcial.domain.usecase.RegistrarLugarUseCase
+import com.example.parcial.domain.model.Categoria
+import com.example.parcial.domain.usecase.GetCategoriasUseCase
+import com.example.parcial.domain.usecase.RegistrarLugarUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

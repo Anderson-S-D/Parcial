@@ -2,12 +2,12 @@ package com.example.parcial.presentacion.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.preparcial.domain.usecase.CrearViajeUseCase
-import com.example.preparcial.domain.usecase.GetCategoriasUseCase
-import com.example.preparcial.domain.usecase.GetLugaresUseCase
-import com.example.preparcial.domain.usecase.GetViajeUseCase
-import com.example.preparcial.domain.usecase.GetViajesUseCase
-import com.example.preparcial.domain.usecase.RegistrarLugarUseCase
+import com.example.parcial.domain.usecase.CrearViajeUseCase
+import com.example.parcial.domain.usecase.GetCategoriasUseCase
+import com.example.parcial.domain.usecase.GetLugaresUseCase
+import com.example.parcial.domain.usecase.GetViajeUseCase
+import com.example.parcial.domain.usecase.GetViajesUseCase
+import com.example.parcial.domain.usecase.RegistrarLugarUseCase
 
 class ViewModelFactory(
     private val getViajesUseCase: GetViajesUseCase,

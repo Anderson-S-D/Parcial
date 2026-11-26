@@ -1,7 +1,7 @@
-package com.example.preparcial.domain.usecase
+package com.example.parcial.domain.usecase
 
-import com.example.preparcial.domain.model.Viaje
-import com.example.preparcial.domain.repository.ViajeRepository
+import com.example.parcial.domain.model.Viaje
+import com.example.parcial.domain.repository.ViajeRepository
 import java.time.LocalDate
 
 class CrearViajeUseCase(
@@ -10,8 +10,8 @@ class CrearViajeUseCase(
     suspend operator fun invoke(
         nombre: String,
         destino: String,
-        fecha_inicio: LocalDate?,
-        fecha_fin: LocalDate?
+        fechaInicio: LocalDate?,
+        fechaFin: LocalDate?
     ): Result<Viaje> {
         if (nombre.isBlank()) {
             return Result.failure(IllegalArgumentException("El nombre no puede estar vacío"))
@@ -19,15 +19,15 @@ class CrearViajeUseCase(
         if (destino.isBlank()) {
             return Result.failure(IllegalArgumentException("El destino no puede estar vacío"))
         }
-        if (fecha_inicio == null) {
+        if (fechaInicio == null) {
             return Result.failure(IllegalArgumentException("La fecha inicio no puede estar vacía"))
         }
-        if (fecha_fin == null) {
+        if (fechaFin == null) {
             return Result.failure(IllegalArgumentException("La fecha fin no puede estar vacía"))
         }
-        if (fecha_fin.isBefore(fecha_inicio)) {
+        if (fechaFin.isBefore(fechaInicio)) {
             return Result.failure(IllegalArgumentException("La fecha fin debe ser igual o posterior a la fecha de inicio"))
         }
-        return repository.crearViaje(nombre.trim(), destino.trim(), fecha_inicio, fecha_fin)
+        return repository.crearViaje(nombre.trim(), destino.trim(), fechaInicio, fechaFin)
     }
 }

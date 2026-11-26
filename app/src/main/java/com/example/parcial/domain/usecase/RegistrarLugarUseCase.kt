@@ -1,7 +1,7 @@
-package com.example.preparcial.domain.usecase
+package com.example.parcial.domain.usecase
 
-import com.example.preparcial.domain.model.Lugar
-import com.example.preparcial.domain.repository.ViajeRepository
+import com.example.parcial.domain.model.Lugar
+import com.example.parcial.domain.repository.ViajeRepository
 import java.time.LocalDate
 
 class RegistrarLugarUseCase(
@@ -42,7 +42,7 @@ class RegistrarLugarUseCase(
         }
         val viaje = resultadoViaje.getOrThrow()
 
-        if (fechaTentativa.isBefore(viaje.fecha_inicio) || fechaTentativa.isAfter(viaje.fecha_fin)) {
+        if (fechaTentativa.isBefore(viaje.fechaInicio) || fechaTentativa.isAfter(viaje.fechaFin)) {
             return Result.failure(
                 IllegalArgumentException("La fecha tentativa debe estar dentro del período del viaje")
             )

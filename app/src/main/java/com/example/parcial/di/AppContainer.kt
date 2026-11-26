@@ -5,13 +5,13 @@ import com.example.parcial.BuildConfig
 import com.example.parcial.data.remote.RetrofitClient
 import com.example.parcial.data.repository.ViajeRepositoryImpl
 import com.example.parcial.presentacion.viewmodel.ViewModelFactory
-import com.example.preparcial.domain.repository.ViajeRepository
-import com.example.preparcial.domain.usecase.CrearViajeUseCase
-import com.example.preparcial.domain.usecase.GetCategoriasUseCase
-import com.example.preparcial.domain.usecase.GetLugaresUseCase
-import com.example.preparcial.domain.usecase.GetViajeUseCase
-import com.example.preparcial.domain.usecase.GetViajesUseCase
-import com.example.preparcial.domain.usecase.RegistrarLugarUseCase
+import com.example.parcial.domain.repository.ViajeRepository
+import com.example.parcial.domain.usecase.CrearViajeUseCase
+import com.example.parcial.domain.usecase.GetCategoriasUseCase
+import com.example.parcial.domain.usecase.GetLugaresUseCase
+import com.example.parcial.domain.usecase.GetViajeUseCase
+import com.example.parcial.domain.usecase.GetViajesUseCase
+import com.example.parcial.domain.usecase.RegistrarLugarUseCase
 
 class AppContainer {
 

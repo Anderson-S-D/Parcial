@@ -1,8 +1,8 @@
-package com.example.preparcial.domain.repository
+package com.example.parcial.domain.repository
 
-import com.example.preparcial.domain.model.Categoria
-import com.example.preparcial.domain.model.Lugar
-import com.example.preparcial.domain.model.Viaje
+import com.example.parcial.domain.model.Categoria
+import com.example.parcial.domain.model.Lugar
+import com.example.parcial.domain.model.Viaje
 import java.time.LocalDate
 
 interface ViajeRepository {
@@ -13,8 +13,8 @@ interface ViajeRepository {
     suspend fun crearViaje(
         nombre: String,
         destino: String,
-        fecha_inicio: LocalDate,
-        fecha_fin: LocalDate
+        fechaInicio: LocalDate,
+        fechaFin: LocalDate
     ): Result<Viaje>
     suspend fun crearLugar(
         tripId: String,

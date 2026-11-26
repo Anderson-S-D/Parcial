@@ -2,10 +2,10 @@ package com.example.parcial.presentacion.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.preparcial.domain.model.Lugar
-import com.example.preparcial.domain.model.Viaje
-import com.example.preparcial.domain.usecase.GetLugaresUseCase
-import com.example.preparcial.domain.usecase.GetViajeUseCase
+import com.example.parcial.domain.model.Lugar
+import com.example.parcial.domain.model.Viaje
+import com.example.parcial.domain.usecase.GetLugaresUseCase
+import com.example.parcial.domain.usecase.GetViajeUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,7 +34,13 @@ class DetalleViajeViewModel(
         }
 
         viewModelScope.launch {
-            _uiState.update { it.copy(cargando = true, error = null) }
+            _uiState.update {
+                if (it.viaje?.id == tripId) {
+                    it.copy(cargando = true, error = null)
+                } else {
+                    DetalleViajeUiState(cargando = true)
+                }
+            }
             val viajeResultado = getViajeUseCase(tripId)
             val lugaresResultado = getLugaresUseCase(tripId)
 

@@ -2,8 +2,8 @@ package com.example.parcial.presentacion.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.preparcial.domain.model.Viaje
-import com.example.preparcial.domain.usecase.CrearViajeUseCase
+import com.example.parcial.domain.model.Viaje
+import com.example.parcial.domain.usecase.CrearViajeUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -53,8 +53,8 @@ class CrearViajeViewModel(
             crearViajeUseCase(
                 nombre = estado.nombre,
                 destino = estado.destino,
-                fecha_inicio = estado.fechaInicio,
-                fecha_fin = estado.fechaFin
+                fechaInicio = estado.fechaInicio,
+                fechaFin = estado.fechaFin
             ).fold(
                 onSuccess = { viaje ->
                     _uiState.update {

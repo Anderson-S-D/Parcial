@@ -11,7 +11,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -19,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.parcial.presentacion.view.AgregarLugarScreen
 import com.example.parcial.presentacion.view.CategoriaUi
 import com.example.parcial.presentacion.view.CrearViajeScreen
@@ -55,10 +55,10 @@ fun AppNavGraph(
     var destino by rememberSaveable { mutableStateOf(Destino.VIAJES) }
     var viajeSeleccionadoId by rememberSaveable { mutableStateOf<String?>(null) }
 
-    val viajesState by viajesViewModel.uiState.collectAsState()
-    val crearState by crearViajeViewModel.uiState.collectAsState()
-    val detalleState by detalleViajeViewModel.uiState.collectAsState()
-    val registrarState by registrarLugarViewModel.uiState.collectAsState()
+    val viajesState by viajesViewModel.uiState.collectAsStateWithLifecycle()
+    val crearState by crearViajeViewModel.uiState.collectAsStateWithLifecycle()
+    val detalleState by detalleViajeViewModel.uiState.collectAsStateWithLifecycle()
+    val registrarState by registrarLugarViewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(viajeSeleccionadoId) {
         viajeSeleccionadoId?.let { registrarLugarViewModel.preparar(it) }
@@ -140,18 +140,19 @@ fun AppNavGraph(
                         id = viaje.id,
                         nombre = viaje.nombre,
                         destino = viaje.destino,
-                        fechaInicio = viaje.fecha_inicio.aTexto(),
-                        fechaFin = viaje.fecha_fin.aTexto()
+                        fechaInicio = viaje.fechaInicio.aTexto(),
+                        fechaFin = viaje.fechaFin.aTexto()
                     ),
                     lugares = detalleState.lugares.map {
                         LugarItemUi(
                             id = it.id,
                             nombre = it.nombre,
-                            fechaTentativa = it.fecha_tentativa.aTexto()
+                            fechaTentativa = it.fechaTentativa.aTexto()
                         )
                     },
                     onAgregarLugarClick = { id ->
                         viajeSeleccionadoId = id
+                        registrarLugarViewModel.reset()
                         registrarLugarViewModel.preparar(id)
                         destino = Destino.AGREGAR_LUGAR
                     },
@@ -163,14 +164,14 @@ fun AppNavGraph(
         Destino.AGREGAR_LUGAR -> {
             val id = viajeSeleccionadoId
             if (id == null) {
-                destino = Destino.VIAJES
+                LaunchedEffect(Unit) { destino = Destino.VIAJES }
             } else {
                 AgregarLugarScreen(
                     nombre = registrarState.nombre,
                     descripcion = registrarState.descripcion,
                     ciudad = registrarState.ciudad,
                     categorias = registrarState.categorias.map {
-                        CategoriaUi(id = it.id.toIntOrNull() ?: 0, nombre = it.nombre)
+                        CategoriaUi(id = it.id, nombre = it.nombre)
                     },
                     categoriaSeleccionadaId = registrarState.categoriaId,
                     fechaTentativa = registrarState.fechaTentativa?.aTexto().orEmpty(),
@@ -184,7 +185,7 @@ fun AppNavGraph(
                     onGuardarClick = { registrarLugarViewModel.guardar() },
                     onBackClick = { destino = Destino.DETALLE_VIAJE },
                     rangoFechasViaje = detalleState.viaje?.let {
-                        "Entre ${it.fecha_inicio.aTexto()} y ${it.fecha_fin.aTexto()}"
+                        "Entre ${it.fechaInicio.aTexto()} y ${it.fechaFin.aTexto()}"
                     },
                     mensajeError = registrarState.error,
                     guardando = registrarState.guardando
