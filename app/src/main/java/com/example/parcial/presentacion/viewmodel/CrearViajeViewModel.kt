@@ -1,9 +1,6 @@
 package com.example.parcial.presentacion.viewmodel
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.preparcial.domain.model.Viaje
 import com.example.preparcial.domain.usecase.CrearViajeUseCase
@@ -23,6 +20,7 @@ class CrearViajeViewModel(
         val destino: String = "",
         val fechaInicio: LocalDate? = null,
         val fechaFin: LocalDate? = null,
+        val guardando: Boolean = false,
         val viajeCreado: Viaje? = null,
         val error: String? = null
     )
@@ -31,53 +29,48 @@ class CrearViajeViewModel(
     val uiState: StateFlow<CrearViajeUiState> = _uiState.asStateFlow()
 
     fun onNombreChange(value: String) {
-        _uiState.update { it.copy(nombre = value, viajeCreado = null, error = null) }
+        _uiState.update { it.copy(nombre = value, error = null, viajeCreado = null) }
     }
 
     fun onDestinoChange(value: String) {
-        _uiState.update { it.copy(destino = value, viajeCreado = null, error = null) }
+        _uiState.update { it.copy(destino = value, error = null, viajeCreado = null) }
     }
 
     fun onFechaInicioChange(value: LocalDate) {
-        _uiState.update { it.copy(fechaInicio = value, viajeCreado = null, error = null) }
+        _uiState.update { it.copy(fechaInicio = value, error = null, viajeCreado = null) }
     }
 
     fun onFechaFinChange(value: LocalDate) {
-        _uiState.update { it.copy(fechaFin = value, viajeCreado = null, error = null) }
+        _uiState.update { it.copy(fechaFin = value, error = null, viajeCreado = null) }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun crearViaje() {
-        val state = _uiState.value
+        if (_uiState.value.guardando) return
+        val estado = _uiState.value
 
         viewModelScope.launch {
+            _uiState.update { it.copy(guardando = true, error = null) }
             crearViajeUseCase(
-                nombre = state.nombre.trim(),
-                destino = state.destino.trim(),
-                fecha_inicio = state.fechaInicio,
-                fecha_fin = state.fechaFin
-            ).onSuccess { viaje ->
-                _uiState.update { it.copy(viajeCreado = viaje, error = null) }
-            }.onFailure { e ->
-                _uiState.update { it.copy(error = e.message ?: "No se pudo crear el viaje") }
-            }
+                nombre = estado.nombre,
+                destino = estado.destino,
+                fecha_inicio = estado.fechaInicio,
+                fecha_fin = estado.fechaFin
+            ).fold(
+                onSuccess = { viaje ->
+                    _uiState.update {
+                        it.copy(guardando = false, viajeCreado = viaje, error = null)
+                    }
+                },
+                onFailure = { e ->
+                    _uiState.update {
+                        it.copy(guardando = false, error = e.message ?: "No se pudo crear el viaje")
+                    }
+                }
+            )
         }
     }
 
     fun reset() {
         _uiState.value = CrearViajeUiState()
-    }
-
-    companion object {
-        fun factory(crearViajeUseCase: CrearViajeUseCase) =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    if (modelClass.isAssignableFrom(CrearViajeViewModel::class.java)) {
-                        return CrearViajeViewModel(crearViajeUseCase) as T
-                    }
-                    throw IllegalArgumentException("ViewModel desconocido: ${modelClass.name}")
-                }
-            }
     }
 }
