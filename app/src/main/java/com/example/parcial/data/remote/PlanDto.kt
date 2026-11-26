@@ -5,50 +5,73 @@ import com.example.preparcial.domain.model.Lugar
 import com.example.preparcial.domain.model.Viaje
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
-import kotlin.String
-
 
 data class CategoriaDto(
-    @SerializedName("id") val id: String? = null,
-    @SerializedName("nombre") val nombre: String? = null
+    @SerializedName("id") val id: Int? = null,
+    @SerializedName("name") val nombre: String? = null,
+    @SerializedName("description") val descripcion: String? = null
 ) {
     fun toDomain(): Categoria {
         return Categoria(
-            id = id ?: "",
+            id = id?.toString() ?: "",
             nombre = nombre ?: ""
+        )
+    }
+}
+
+data class LugarDto(
+    @SerializedName("id") val id: String? = null,
+    @SerializedName("tripId") val viajeId: String? = null,
+    @SerializedName("name") val nombre: String? = null,
+    @SerializedName("description") val descripcion: String? = null,
+    @SerializedName("city") val ciudad: String? = null,
+    @SerializedName("categoryId") val categoriaId: Int? = null,
+    @SerializedName("tentativeDate") val fechaTentativa: String? = null,
+    @SerializedName("category") val categoria: CategoriaDto? = null
+) {
+    fun toDomain(): Lugar {
+        return Lugar(
+            id = id ?: "",
+            nombre = nombre ?: "",
+            descripcion = descripcion ?: "",
+            ciudad = ciudad ?: "",
+            categoria = listOfNotNull(categoria?.toDomain()),
+            fecha_tentativa = LocalDate.parse(fechaTentativa)
         )
     }
 }
 
 data class ViajeDto(
     @SerializedName("id") val id: String? = null,
-    @SerializedName("nombre") val nombre: String? = null,
-    @SerializedName("destino") val destino: String? = null,
-    @SerializedName("fecha_inicio") val fecha_inicio: String? = null,
-    @SerializedName("fecha_fin") val fecha_fin: String? = null
+    @SerializedName("name") val nombre: String? = null,
+    @SerializedName("destination") val destino: String? = null,
+    @SerializedName("startDate") val fechaInicio: String? = null,
+    @SerializedName("endDate") val fechaFin: String? = null,
+    @SerializedName("places") val lugares: List<LugarDto>? = null
 ) {
     fun toDomain(): Viaje {
         return Viaje(
             id = id ?: "",
             nombre = nombre ?: "",
-            destino= String ?: "",
-            fecha_inicio= LocalDate?: "",
-            fecha_fin= LocalDate: ""
+            destino = destino ?: "",
+            fecha_inicio = LocalDate.parse(fechaInicio),
+            fecha_fin = LocalDate.parse(fechaFin)
         )
     }
 }
 
 data class CrearViajeRequestDto(
-    @SerializedName("motivo") val motivo: String,
-    @SerializedName("meta") val meta: Double,
-    @SerializedName("meses") val meses: Int,
-    @SerializedName("miembros") val miembros: List<String>
+    @SerializedName("name") val nombre: String,
+    @SerializedName("destination") val destino: String,
+    @SerializedName("startDate") val fechaInicio: String,
+    @SerializedName("endDate") val fechaFin: String
 )
 
 data class CrearLugarRequestDto(
-    @SerializedName("motivo") val motivo: String,
-    @SerializedName("meta") val meta: Double,
-    @SerializedName("meses") val meses: Int,
-    @SerializedName("miembros") val miembros: List<String>
+    @SerializedName("tripId") val viajeId: String,
+    @SerializedName("name") val nombre: String,
+    @SerializedName("description") val descripcion: String,
+    @SerializedName("city") val ciudad: String,
+    @SerializedName("categoryId") val categoriaId: Int,
+    @SerializedName("tentativeDate") val fechaTentativa: String
 )
-
