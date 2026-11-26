@@ -36,7 +36,10 @@ data class LugarDto(
             descripcion = descripcion ?: "",
             ciudad = ciudad ?: "",
             categoria = listOfNotNull(categoria?.toDomain()),
-            fecha_tentativa = LocalDate.parse(fechaTentativa)
+            fecha_tentativa = fechaTentativa?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
+                ?: LocalDate.MIN,
+            tripId = viajeId.orEmpty(),
+            categoriaId = categoriaId
         )
     }
 }
@@ -54,8 +57,10 @@ data class ViajeDto(
             id = id ?: "",
             nombre = nombre ?: "",
             destino = destino ?: "",
-            fecha_inicio = LocalDate.parse(fechaInicio),
-            fecha_fin = LocalDate.parse(fechaFin)
+            fecha_inicio = fechaInicio?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
+                ?: LocalDate.MIN,
+            fecha_fin = fechaFin?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
+                ?: LocalDate.MIN
         )
     }
 }
