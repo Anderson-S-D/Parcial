@@ -3,6 +3,10 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+val apiBaseUrl = providers.gradleProperty("apiBaseUrl")
+    .orElse("http://10.0.2.2:8000/")
+    .get()
+
 android {
     namespace = "com.example.parcial"
     compileSdk {
@@ -11,11 +15,13 @@ android {
 
     defaultConfig {
         applicationId = "com.example.parcial"
-        minSdk = 24
+        // java.time.LocalDate requiere API 26 (no activamos desugaring).
+        minSdk = 26
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 
+        buildConfigField("String", "API_BASE_URL", "\"$apiBaseUrl\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -33,7 +39,14 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
+}
+
+// Pantallas de otro proyecto que quedaron copiadas y no compilan.
+// Se dejan los archivos, pero no se compilan mientras se terminan de migrar.
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    exclude { elemento -> elemento.file.path.replace('\\', '/').contains("/presentacion/ui/") }
 }
 
 dependencies {
