@@ -22,8 +22,10 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.WorkOutline
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -57,6 +59,9 @@ fun ViajesScreen(
     onViajeClick: (String) -> Unit,
     onCrearViajeClick: () -> Unit,
     modifier: Modifier = Modifier,
+    cargando: Boolean = false,
+    mensajeError: String? = null,
+    onReintentar: () -> Unit = {},
     onMenuClick: () -> Unit = {},
     onOpcionesViajeClick: (String) -> Unit = {}
 ) {
@@ -96,27 +101,44 @@ fun ViajesScreen(
                 .padding(innerPadding),
             contentAlignment = Alignment.TopCenter
         ) {
-            if (viajes.isEmpty()) {
-                ListaViajesVacia(modifier = Modifier.align(Alignment.Center))
-            } else {
-                LazyColumn(
-                    modifier = Modifier
-                        .widthIn(max = 600.dp)
-                        .fillMaxSize(),
-                    contentPadding = PaddingValues(
-                        start = 16.dp,
-                        end = 16.dp,
-                        top = 16.dp,
-                        bottom = 96.dp
-                    ),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(items = viajes, key = { it.id }) { viaje ->
-                        ViajeCard(
-                            viaje = viaje,
-                            onClick = { onViajeClick(viaje.id) },
-                            onOpcionesClick = { onOpcionesViajeClick(viaje.id) }
+            when {
+                cargando -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                mensajeError != null -> {
+                    Column(
+                        modifier = Modifier.align(Alignment.Center).padding(32.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = mensajeError,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center
                         )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(onClick = onReintentar) { Text("Reintentar") }
+                    }
+                }
+                viajes.isEmpty() -> ListaViajesVacia(modifier = Modifier.align(Alignment.Center))
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier
+                            .widthIn(max = 600.dp)
+                            .fillMaxSize(),
+                        contentPadding = PaddingValues(
+                            start = 16.dp,
+                            end = 16.dp,
+                            top = 16.dp,
+                            bottom = 96.dp
+                        ),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(items = viajes, key = { it.id }) { viaje ->
+                            ViajeCard(
+                                viaje = viaje,
+                                onClick = { onViajeClick(viaje.id) },
+                                onOpcionesClick = { onOpcionesViajeClick(viaje.id) }
+                            )
+                        }
                     }
                 }
             }
